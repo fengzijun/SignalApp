@@ -3,7 +3,7 @@
 }
 
 <h2>航行实时图</h2>
-
+<input type="button" id="sendmessage" value="Send" />
 <div id="main"  style="width: 600px;height:400px;"></div>
 @section scripts {
     <!--Script references. -->
@@ -133,29 +133,120 @@
             '韶关': [113.7964, 24.7028]
         };
 
+        var citys = [{name:"上海",value:30},
+        {name:"广州",value:30},
+        {name:"北京",value:30},
+        {name:"大连",value:30},
+        {name:"南宁",value:30},
+        {name:"南昌",value:30},
+        {name:"拉萨",value:30},
+        {name:"长春",value:30},
+        {name:"包头",value:30},
+        {name:"重庆",value:30}
+      
+        ];
+
         var BJData = [];
         var SHData = [];
         var GZData = [];
         var myChart;
         var chinajson;
+        var isfirst = 0;
+
+        var color = ['#a6c84c', '#ffa022', '#46bee9'];
         $.get('@Url.Content("~/Scripts/china.json")', function (chinaJson) {
             echarts.registerMap('china', chinaJson);
             chinajson = chinaJson;
 
-            init();
+            initmap();
 
+            initservice();
         });
 
-        var init = function () {
+        var initmap = function()
+        {
+            if (myChart != undefined)
+                myChart.dispose();
+
+            myChart = echarts.init(document.getElementById('main'), null, {
+                renderer: 'canvas'
+            });
+
+            var series = [];
+
+            series.push({
+                name: 'city',
+                type: 'effectScatter',
+                coordinateSystem: 'geo',
+                zlevel: 2,
+                rippleEffect: {
+                    brushType: 'stroke'
+                },
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{b}'
+                    }
+                },
+                symbolSize: function (val) {
+                    return val[2] / 8;
+                },
+                itemStyle: {
+                    normal: {
+                        color: color[0]
+                    }
+                },
+                data: citys.map(function (dataItem) {
+                    return {
+                        name:  dataItem.name,
+                        value: geoCoordMap[dataItem.name].concat([dataItem.value])
+                    };
+                })
+            })
+
+            var option = {
+                backgroundColor: '#404a59',
+                title: {
+
+                    left: 'center',
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+
+                geo: {
+                    map: 'china',
+                    label: {
+                        emphasis: {
+                            show: false
+                        }
+                    },
+                    roam: true,
+                    itemStyle: {
+                        normal: {
+                            areaColor: '#323c48',
+                            borderColor: '#404a59'
+                        },
+                        emphasis: {
+                            areaColor: '#2a333d'
+                        }
+                    }
+                },
+                series: series
+            };
+
+            myChart.setOption(option);
+        }
+
+        var initservice = function () {
             var iHub = $.connection.echarsHub;
             // Create a function that the hub can call back to display messages.
             iHub.client.getFlyMsgSend = function (bjobj, shobj, gzobj) {
-                if(myChart!=undefined)
-                   myChart.dispose();
-
-                myChart = echarts.init(document.getElementById('main'), null, {
-                    renderer: 'canvas'
-                });
+             
 
                 bjobj.forEach(function (item, i) {
                     var temparray = new Array();
@@ -193,82 +284,37 @@
                     GZData.push(temparray);
                 });
 
-                var color = ['#a6c84c', '#ffa022', '#46bee9'];
-                var series = [];
+                
+                var series = myChart.getOption().series;
 
-                [['北京', BJData], ['上海', SHData], ['广州', GZData]].forEach(function (item, i) {
-                    series.push({
-                        name: item[0] + ' Top10',
-                        type: 'lines',
-                        zlevel: 1,
-                        effect: {
-                            show: true,
-                            period: 6,
-                            trailLength: 0,
-                            symbol: "arrow",
-                            symbolSize: 7
-                        },
-                        lineStyle: {
-                            normal: {
-                                color: color[i],
-                                width: 0,
-                                curveness: 0.2
-                            }
-                        },
-                        data: convertData(item[1])
-                    },
-                    {
-                        name: item[0] + ' Top10',
-                        type: 'lines',
-                        zlevel: 2,
-                        effect: {
-                            show: true,
-                            period: 6,
-                            trailLength: 0,
-                            symbol: "arrow",
-                            symbolSize: 7
-                        },
-                        lineStyle: {
-                            normal: {
-                                color: color[i],
-                                width: 1,
-                                opacity: 0.4,
-                                curveness: 0.2
-                            }
-                        },
-                        data: convertData(item[1])
-                    },
-                    {
-                        name: item[0] + ' Top10',
-                        type: 'effectScatter',
-                        coordinateSystem: 'geo',
-                        zlevel: 2,
-                        rippleEffect: {
-                            brushType: 'stroke'
-                        },
-                        label: {
-                            normal: {
+                if (series.length == 1)
+                {
+                    [['北京', BJData], ['上海', SHData], ['广州', GZData]].forEach(function (item, i) {
+                        series.push({
+                            name: '',
+                            type: 'line',
+                            zlevel: 1,
+                            effect: {
                                 show: true,
-                                position: 'right',
-                                formatter: '{b}'
-                            }
-                        },
-                        symbolSize: function (val) {
-                            return val[2] / 8;
-                        },
-                        itemStyle: {
-                            normal: {
-                                color: color[i]
-                            }
-                        },
-                        data: item[1].map(function (dataItem) {
-                            return {
-                                name: dataItem[1].name,
-                                value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value])
-                            };
-                        })
+                                period: 6,
+                                trailLength: 0,
+                                symbol: "arrow",
+                                symbolSize: 7
+                            },
+                            lineStyle: {
+                                normal: {
+                                    color: color[i],
+                                    width: 0,
+                                    curveness: 0.2
+                                }
+                            },
+                            data: convertData(item[1])
+                        }
+                       
+                      );
                     });
-                });
+                }
+
 
                 var option = {
                     backgroundColor: '#404a59',
@@ -304,12 +350,18 @@
                     series: series
                 };
 
-                myChart.setOption(option, true, false);
+
+                myChart.setOption(option);
+
             };
 
             $.connection.hub.start().done(function () {
-                iHub.server.send();
+                $("#sendmessage").click(function () {
+                    iHub.server.send();
+                })
+               
             });
+
 
             var convertData = function (data) {
                 var res = [];

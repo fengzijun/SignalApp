@@ -13,20 +13,24 @@ namespace EChartsAndSignalR
     {
         public void Send()
         {
-            Task perdiodicTask = PeriodicTaskFactory.Start(() =>
-            {
-                // Console.WriteLine(DateTime.Now);
-                List<FlyModel> bjModelTemp = new List<FlyModel>();
-                List<FlyModel> shModelTemp = new List<FlyModel>();
-                List<FlyModel> gzModelTemp = new List<FlyModel>();
-                GetData(ref bjModelTemp, ref shModelTemp, ref gzModelTemp);
-                Clients.All.getFlyMsgSend(bjModelTemp, shModelTemp, gzModelTemp);
-            },
+            // Task perdiodicTask = PeriodicTaskFactory.Start(() =>
+            // {
+            //     // Console.WriteLine(DateTime.Now);
+            //     List<FlyModel> bjModelTemp = new List<FlyModel>();
+            //     List<FlyModel> shModelTemp = new List<FlyModel>();
+            //     List<FlyModel> gzModelTemp = new List<FlyModel>();
+            //     GetData(ref bjModelTemp, ref shModelTemp, ref gzModelTemp);
+            //     Clients.All.getFlyMsgSend(bjModelTemp, shModelTemp, gzModelTemp);
+            // },
 
-            intervalInMilliseconds: 5000// fire every two seconds...
-           );
+            // intervalInMilliseconds: 5000// fire every two seconds...
+            //);
 
-           
+            List<FlyModel> bjModelTemp = new List<FlyModel>();
+            List<FlyModel> shModelTemp = new List<FlyModel>();
+            List<FlyModel> gzModelTemp = new List<FlyModel>();
+            GetData(ref bjModelTemp, ref shModelTemp, ref gzModelTemp);
+            Clients.All.getFlyMsgSend(bjModelTemp, shModelTemp, gzModelTemp);
         }
 
         private void GetData(ref List<FlyModel> bjModelTemp, ref List<FlyModel> shModelTemp, ref List<FlyModel> gzModelTemp)
@@ -66,26 +70,13 @@ namespace EChartsAndSignalR
             gzModel.Add(new FlyModel { StartName = "广州", EndName = "重庆", Val = 10 });
 
             Random rank = new Random();
-            for (var i = 0; i < 4; i++)
-            {
-
-                int index = rank.Next(0, 8);
-                bjModelTemp.Add(bjModel[index]);
-            }
-
-            for (var i = 0; i < 4; i++)
-            {
-
-                int index = rank.Next(0, 8);
-                shModelTemp.Add(shModel[index]);
-            }
-
-            for (var i = 0; i < 4; i++)
-            {
-
-                int index = rank.Next(0, 8);
-                gzModelTemp.Add(gzModel[index]);
-            }
+            int index = rank.Next(0, 9);
+            bjModelTemp.Add(bjModel[index]);
+            index = rank.Next(0, 9);
+            shModelTemp.Add(shModel[index]);
+            index = rank.Next(0, 9);
+            gzModelTemp.Add(gzModel[index]);
+           
         }
     }
 }
