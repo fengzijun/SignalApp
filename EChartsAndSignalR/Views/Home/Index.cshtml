@@ -173,7 +173,7 @@
             });
 
             var series = [];
-
+            
             series.push({
                 name: 'city',
                 type: 'effectScatter',
@@ -284,22 +284,20 @@
                     GZData.push(temparray);
                 });
 
-                
+            
                 var series = myChart.getOption().series;
 
                 if (series.length == 1)
                 {
                     [['北京', BJData], ['上海', SHData], ['广州', GZData]].forEach(function (item, i) {
                         series.push({
-                            name: '',
-                            type: 'line',
+                            name: item[0],
+                            type: 'lines',
                             zlevel: 1,
                             effect: {
                                 show: true,
                                 period: 6,
-                                trailLength: 0,
-                                symbol: "arrow",
-                                symbolSize: 7
+
                             },
                             lineStyle: {
                                 normal: {
@@ -309,49 +307,93 @@
                                 }
                             },
                             data: convertData(item[1])
-                        }
+                         },
+                         {
+                             name: item[0],
+                             type: 'lines',
+                             zlevel: 2,
+                             effect: {
+                                 show: true,
+                                 period: 6,
+                                 trailLength: 0,
+                                 symbol: "arrow",
+                                 symbolSize: 7
+                             },
+                             lineStyle: {
+                                 normal: {
+                                     color: color[i],
+                                     width: 1,
+                                     opacity: 0.4,
+                                     curveness: 0.2
+                                 }
+                             },
+                             data: convertData(item[1])
+                         }
                        
                       );
                     });
+
+                    var option = {
+                        backgroundColor: '#404a59',
+                        title: {
+
+                            left: 'center',
+                            textStyle: {
+                                color: '#fff'
+                            }
+                        },
+                        tooltip: {
+                            trigger: 'item'
+                        },
+
+                        geo: {
+                            map: 'china',
+                            label: {
+                                emphasis: {
+                                    show: false
+                                }
+                            },
+                            roam: true,
+                            itemStyle: {
+                                normal: {
+                                    areaColor: '#323c48',
+                                    borderColor: '#404a59'
+                                },
+                                emphasis: {
+                                    areaColor: '#2a333d'
+                                }
+                            }
+                        },
+                        series: series
+                    };
+
+
+                    myChart.setOption(option);
+                }
+                else
+                {
+
+                    [['北京', BJData], ['上海', SHData], ['广州', GZData]].forEach(function (item, i) {
+                     
+                        var itemname = item[0];
+
+                        myChart.setOption({
+                            series: [{
+
+                                name: item[0],
+                                data: convertData(item[1])
+                            }]
+                        })
+
+                      
+                    })
+
+           
+                   
                 }
 
 
-                var option = {
-                    backgroundColor: '#404a59',
-                    title: {
-
-                        left: 'center',
-                        textStyle: {
-                            color: '#fff'
-                        }
-                    },
-                    tooltip: {
-                        trigger: 'item'
-                    },
-
-                    geo: {
-                        map: 'china',
-                        label: {
-                            emphasis: {
-                                show: false
-                            }
-                        },
-                        roam: true,
-                        itemStyle: {
-                            normal: {
-                                areaColor: '#323c48',
-                                borderColor: '#404a59'
-                            },
-                            emphasis: {
-                                areaColor: '#2a333d'
-                            }
-                        }
-                    },
-                    series: series
-                };
-
-
-                myChart.setOption(option);
+               
 
             };
 
