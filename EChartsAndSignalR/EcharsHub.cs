@@ -13,24 +13,24 @@ namespace EChartsAndSignalR
     {
         public void Send()
         {
-            // Task perdiodicTask = PeriodicTaskFactory.Start(() =>
-            // {
-            //     // Console.WriteLine(DateTime.Now);
-            //     List<FlyModel> bjModelTemp = new List<FlyModel>();
-            //     List<FlyModel> shModelTemp = new List<FlyModel>();
-            //     List<FlyModel> gzModelTemp = new List<FlyModel>();
-            //     GetData(ref bjModelTemp, ref shModelTemp, ref gzModelTemp);
-            //     Clients.All.getFlyMsgSend(bjModelTemp, shModelTemp, gzModelTemp);
-            // },
+            Task perdiodicTask = PeriodicTaskFactory.Start(() =>
+            {
+                 // Console.WriteLine(DateTime.Now);
+                 List<FlyModel> bjModelTemp = new List<FlyModel>();
+                List<FlyModel> shModelTemp = new List<FlyModel>();
+                List<FlyModel> gzModelTemp = new List<FlyModel>();
+                GetData(ref bjModelTemp, ref shModelTemp, ref gzModelTemp);
+                Clients.All.getFlyMsgSend(bjModelTemp, shModelTemp, gzModelTemp);
+            },
 
-            // intervalInMilliseconds: 5000// fire every two seconds...
-            //);
+            intervalInMilliseconds: 5000// fire every two seconds...
+           );
 
-            List<FlyModel> bjModelTemp = new List<FlyModel>();
-            List<FlyModel> shModelTemp = new List<FlyModel>();
-            List<FlyModel> gzModelTemp = new List<FlyModel>();
-            GetData(ref bjModelTemp, ref shModelTemp, ref gzModelTemp);
-            Clients.All.getFlyMsgSend(bjModelTemp, shModelTemp, gzModelTemp);
+            //List<FlyModel> bjModelTemp = new List<FlyModel>();
+            //List<FlyModel> shModelTemp = new List<FlyModel>();
+            //List<FlyModel> gzModelTemp = new List<FlyModel>();
+            //GetData(ref bjModelTemp, ref shModelTemp, ref gzModelTemp);
+            //Clients.All.getFlyMsgSend(bjModelTemp, shModelTemp, gzModelTemp);
         }
 
         private void GetData(ref List<FlyModel> bjModelTemp, ref List<FlyModel> shModelTemp, ref List<FlyModel> gzModelTemp)
