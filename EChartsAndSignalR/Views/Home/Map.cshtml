@@ -21,14 +21,15 @@
     }
 </style>
 
-<div class="container-fluid" style="display:none">
+<div class="navbar navbar-default navbar-fixed-top" role="navigation" id="head"></div>
+<div class="container-fluid">
     <div class="row-fluid example">
         <div id="sidebar-code" class="col-md-4">
             <div class="well sidebar-nav">
                 <div class="nav-header"><a href="#" onclick="autoResize()" class="glyphicon glyphicon-resize-full" id="icon-resize"></a>option</div>
 
-                <textarea style="display:none" id="code" name="code">
-                    var option = {
+                <textarea id="code" name="code">
+                    option = {
                     backgroundColor: '#1b1b1b',
                     color: ['gold', 'aqua', 'lime'],
                     title: {
@@ -600,6 +601,6 @@
 <div id="main" class="main" style="height: 530px;"></div>
 
 <script src="../Scripts/asset/js/jquery.min.js"></script>
-@*<script type="text/javascript" src="../Scripts/asset/js/echartsHome.js"></script>*@
+<script type="text/javascript" src="../Scripts/asset/js/echartsHome.js"></script>
 <script src="../Scripts/asset/js/bootstrap.min.js"></script>
 <script src="../Scripts/asset/js/echartsExample.js"></script>
